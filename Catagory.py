@@ -12,7 +12,7 @@ class Category():
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
-        self.getBrandList("化妝水")
+        self.getBrandList("化妝水", "string")
     
     def __get_ChromeOptions(self): 
             options = uc.ChromeOptions()
@@ -28,21 +28,43 @@ class Category():
             options.add_argument("--user-data-dir=C:\\Users\\v99sa\\Desktop\\coding\\py\\Momo_WebCrawler\\Momo_WebCrawler\\profile1")
             return options
         
-    def getCatagories(self):
+    def getCatagories(self, type):
         catagories = self.driver.find_element(By.ID, "bt_cate_top")
-        return catagories
+        if(type == "webElement"):
+            return catagories
+        elif(type == "string"):
+            return catagories.text
         
-    def getBrandList(self, catagory):
+    def getRawLists(self):
         wait = WebDriverWait(self.driver, 20)
         
         catagoryBotton = self.getCatagories()
-        catagoryBotton = catagoryBotton.find_elements(By.XPATH, ".//a")
-        for c in catagoryBotton:
-            print(c.text)
-            print(c.get_attribute("href"))
+        catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % "化妝水")
+        catagoryLink = catagoryBotton.get_attribute("href")
+        print(catagoryLink)
+        #self.driver.execute_script("window.open('%s');" % catagoryLink)
+        #self.driver.switch_to.window(self.driver.window_handles[1])
+        self.driver.get(catagoryLink)
+        wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
                 
-        #brandList = self.driver.find_element(By.ID, "brandsList")
-        #print(brandList.text)
-        #return brandList
+        rawLists = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody")
+        return rawLists
+    def getBrandList(self, catagory, type):
+        wait = WebDriverWait(self.driver, 20)
+        
+        catagoryBotton = self.getCatagories("webElement")
+        catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % catagory)
+        catagoryLink = catagoryBotton.get_attribute("href")
+        print(catagoryLink)
+        #self.driver.switch_to.window(self.driver.window_handles[1])
+        self.driver.get(catagoryLink)
+        wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
+                
+        brandList = self.driver.find_element(By.XPATH, "//table[@class = 'wrapTable']//tbody")
+        print(brandList.get_attribute("outerHTML"))
+        if(type == "webElement"):
+            return brandList
+        elif(type == "string"):
+            return brandList.text
     
 c = Category()
