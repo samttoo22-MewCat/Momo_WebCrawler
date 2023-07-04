@@ -42,8 +42,7 @@ class Category():
         catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % "化妝水")
         catagoryLink = catagoryBotton.get_attribute("href")
         print(catagoryLink)
-        #self.driver.execute_script("window.open('%s');" % catagoryLink)
-        #self.driver.switch_to.window(self.driver.window_handles[1])
+        
         self.driver.get(catagoryLink)
         wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
                 
@@ -56,15 +55,17 @@ class Category():
         catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % catagory)
         catagoryLink = catagoryBotton.get_attribute("href")
         print(catagoryLink)
-        #self.driver.switch_to.window(self.driver.window_handles[1])
+        
         self.driver.get(catagoryLink)
         wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
                 
-        brandList = self.driver.find_element(By.XPATH, "//table[@class = 'wrapTable']//tbody")
-        print(brandList.get_attribute("outerHTML"))
+        brandListBottons = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr//td//div[@class= 'wrapDiv']//ul[@id = 'brandsList']//li//label")
         if(type == "webElement"):
-            return brandList
+            return brandListBottons
         elif(type == "string"):
-            return brandList.text
+            brandList = []
+            for b in brandListBottons:
+                brandList.append(b.get_attribute("title"))
+            return brandList
     
 c = Category()
