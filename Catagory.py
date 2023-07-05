@@ -12,7 +12,7 @@ class Category():
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
-        self.getBrandList("化妝水", "string")
+        self.getSubCatagories2("化妝水", "品牌", "string")
     
     def __get_ChromeOptions(self): 
             options = uc.ChromeOptions()
@@ -29,51 +29,58 @@ class Category():
             return options
     
     #找出大分類    
-    def getCatagories(self, type):
+    def getCatagories(self, outType):
         catagories = self.driver.find_element(By.ID, "bt_cate_top")
-        if(type == "webElement"):
+        if(outType == "webElement"):
             return catagories
-        elif(type == "string"):
+        elif(outType == "string"):
             return catagories.text
     
-    #找出小分類    
-    def getRawLists(self):
+    def goToCatagoryLink(self, catagory):
         wait = WebDriverWait(self.driver, 20)
         
-        catagoryBotton = self.getCatagories()
-        catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % "化妝水")
-        catagoryLink = catagoryBotton.get_attribute("href")
-        print(catagoryLink)
-        
-        self.driver.get(catagoryLink)
-        wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
-                
-        rawLists = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody")
-        return rawLists
-    
-    #找出小分類中的 "品牌"
-    def getBrandList(self, catagory, type):
-        wait = WebDriverWait(self.driver, 20)
-        
-        #拿到類別的按鈕和連結
+        #要先打開大分類才會出現小分類
         catagoryBotton = self.getCatagories("webElement")
         catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % catagory)
         catagoryLink = catagoryBotton.get_attribute("href")
         
-        #轉到類別的連結，然後等待到類別下小分類顯示出來
+        #轉到大分類的的連結
         self.driver.get(catagoryLink)
         wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
+    #找出小分類    
+    def getSubCatagories1(self, catagory, outType):
+        self.goToCatagoryLink()
+                
+        rawLists = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
+        if(outType == "webElement"):
+            return rawLists
+        elif(outType == "string"):
+            subCatagories = []
+            for r in rawLists:
+                subCatagories.append(r.get_attribute("indexname"))
+                
+                
+    #找出小分類中的 小小分類列表
+    def getSubCatagories2(self, catagory, subCatagory1, outType):
+        self.goToCatagoryLink(catagory)
         
-        #小分類的按鈕列表
-        brandListBottons = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr//td//div[@class= 'wrapDiv']//ul[@id = 'brandsList']//li//label")
-        
+        subCatagories2 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
+            
+        for s in subCatagories2:
+            subCatagories1Name = s.get_attribute("indexname")
+            if(subCatagories1Name == subCatagory1):
+                subCatagories2 = s.find_elements(By.XPATH, ".//td//div[@class = 'wrapDiv']//ul//li//label")
+                break
+            
         #分成輸出元素還是純文字
-        if(type == "webElement"):
-            return brandListBottons
-        elif(type == "string"):
-            brandList = []
-            for b in brandListBottons:
-                brandList.append(b.get_attribute("title"))
-            return brandList
+        if(outType == "webElement"):
+            return subCatagories2
+        elif(outType == "string"):
+            subCatagories2List = []
+            for b in subCatagories2:
+                subCatagories2List.append(b.get_attribute("title"))
+            return subCatagories2List
     
+    def getFitsOnTypes(self, catagory):
+        pass
 c = Category()
