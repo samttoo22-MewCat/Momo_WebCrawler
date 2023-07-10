@@ -12,6 +12,8 @@ class Category():
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
+        
+        self.getSubCatagories1("化妝水", "string")
         self.getSubCatagories2("化妝水", "品牌", "string")
     
     def __get_ChromeOptions(self): 
@@ -49,7 +51,7 @@ class Category():
         wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
     #找出小分類    
     def getSubCatagories1(self, catagory, outType):
-        self.goToCatagoryLink()
+        self.goToCatagoryLink(catagory)
                 
         rawLists = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
         if(outType == "webElement"):
@@ -57,6 +59,7 @@ class Category():
         elif(outType == "string"):
             subCatagories = []
             for r in rawLists:
+                print(r.get_attribute("indexname"))
                 subCatagories.append(r.get_attribute("indexname"))
                 
                 
@@ -78,6 +81,9 @@ class Category():
         elif(outType == "string"):
             subCatagories2List = []
             for b in subCatagories2:
+                if(b.get_attribute("title") == None):
+                    pass
+                print(b.get_attribute("title"))
                 subCatagories2List.append(b.get_attribute("title"))
             return subCatagories2List
     
