@@ -63,11 +63,7 @@ class Category():
                 
                 
     #找出小分類中的 小小分類列表
-    def getSubCatagories2(self, catagory, subCatagory1, outType):
-        try:
-            self.goToCatagoryLink(catagory)
-        except:
-            print("無此大分類")
+    def getSubCatagories2(self, subCatagory1, outType):
         subCatagories2 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
             
         for s in subCatagories2:
@@ -90,21 +86,45 @@ class Category():
             return subCatagories2List
     
     
-    def selectSubCata2(self, catagory, subCata1, subCata2):
-        wait = WebDriverWait(self.driver, 20)
-        subCatas2 = self.getSubCatagories2(catagory, subCata1, "webElement")
+    def selectSubCata2(self, subCata1, subCata2):
+        subCatas2 = self.getSubCatagories2(subCata1, "webElement")
         for s in subCatas2:
             if(subCata2 in s.get_attribute("title")):
-                wait.until(EC.element_to_be_clickable(s))
+                self.wait.until(EC.element_to_be_clickable(s))
                 s.click()
-                wait.until(EC.visibility_of_element_located((By.XPATH, "//label[@class = 'selected']")))
+                self.wait.until(EC.visibility_of_element_located((By.XPATH, "//label[@class = 'selected']")))
                 break
     
     def getProductsLinksList(self):
+        def getPages():
+            pages = self.driver.find_element(By.XPATH, "//li[contains(text(),'頁數')]")
+            return pages.text.split(" ")[-1]
+        def getPageNow():
+            pages = self.driver.find_element(By.XPATH, "//li[contains(text(),'頁數')]")
+            return pages.text.split(" ")[-3]
+        def goToNextPage():
+            nextPageBotton = self.driver.find_element(By.XPATH, "//a[contains(text(),'下一頁')]")
+            self.wait.until(EC.element_to_be_clickable(nextPageBotton))
+            nextPageBotton.click()
+            #self.wait.until(EC.visibility_of_element_located((By.XPATH, "//li[contains(text(),'頁數')]")))
+        
         LinksList = []
-        
-        
+        pages = int(getPages())
+        for page in range(pages):
+            products = self.driver.find_elements(By.XPATH, "//div[@class = 'prdListArea bt770class']//ul//li")
+            for product in products:
+                url = product.find_element(By.XPATH, ".//a[@class = 'prdUrl']").get_attribute("href")
+                totalSale = product.find_element(By.XPATH, ".//span[@class = 'totalSales goodsTotalSales']").text.split(">")[-1]
+                out = []
+                out.append(url)
+                out.append(totalSale)
+                LinksList.append(out)
+            if(page != pages - 1):
+                goToNextPage()
+        return LinksList
+                
 c = Category()
 c.goToCatagoryLink("化妝水")
-#c.getSubCatagories2("化妝水", "品牌", "string")
-c.selectSubCata2("化妝水", "品牌", "IPSA 茵芙莎")
+#c.getSubCatagories2("品牌", "string")
+c.selectSubCata2("功效", "抗痘")
+print(c.getProductsLinksList())
