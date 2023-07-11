@@ -12,9 +12,8 @@ class Category():
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
+        self.wait = WebDriverWait(self.driver, 20)
         
-        self.getSubCatagories1("化妝水", "string")
-        self.getSubCatagories2("化妝水", "品牌", "string")
     
     def __get_ChromeOptions(self): 
             options = uc.ChromeOptions()
@@ -39,8 +38,6 @@ class Category():
             return catagories.text
     
     def goToCatagoryLink(self, catagory):
-        wait = WebDriverWait(self.driver, 20)
-        
         #要先打開大分類才會出現小分類
         catagoryBotton = self.getCatagories("webElement")
         catagoryBotton = catagoryBotton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % catagory)
@@ -48,25 +45,29 @@ class Category():
         
         #轉到大分類的的連結
         self.driver.get(catagoryLink)
-        wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
+        self.wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
     #找出小分類    
     def getSubCatagories1(self, catagory, outType):
-        self.goToCatagoryLink(catagory)
-                
+        try:
+            self.goToCatagoryLink(catagory)
+        except:
+            print("無此大分類")        
         rawLists = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
         if(outType == "webElement"):
             return rawLists
         elif(outType == "string"):
             subCatagories = []
             for r in rawLists:
-                print(r.get_attribute("indexname"))
+                #print(r.get_attribute("indexname"))
                 subCatagories.append(r.get_attribute("indexname"))
                 
                 
     #找出小分類中的 小小分類列表
     def getSubCatagories2(self, catagory, subCatagory1, outType):
-        self.goToCatagoryLink(catagory)
-        
+        try:
+            self.goToCatagoryLink(catagory)
+        except:
+            print("無此大分類")
         subCatagories2 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
             
         for s in subCatagories2:
@@ -84,9 +85,26 @@ class Category():
                 if(b.get_attribute("title") == None):
                     pass
                 print(b.get_attribute("title"))
+                #print(b.get_attribute("outerHTML"))
                 subCatagories2List.append(b.get_attribute("title"))
             return subCatagories2List
     
-    def getFitsOnTypes(self, catagory):
-        pass
+    
+    def selectSubCata2(self, catagory, subCata1, subCata2):
+        wait = WebDriverWait(self.driver, 20)
+        subCatas2 = self.getSubCatagories2(catagory, subCata1, "webElement")
+        for s in subCatas2:
+            if(subCata2 in s.get_attribute("title")):
+                wait.until(EC.element_to_be_clickable(s))
+                s.click()
+                wait.until(EC.visibility_of_element_located((By.XPATH, "//label[@class = 'selected']")))
+                break
+    
+    def getProductsLinksList(self):
+        LinksList = []
+        
+        
 c = Category()
+c.goToCatagoryLink("化妝水")
+#c.getSubCatagories2("化妝水", "品牌", "string")
+c.selectSubCata2("化妝水", "品牌", "IPSA 茵芙莎")
