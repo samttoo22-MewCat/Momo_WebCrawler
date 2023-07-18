@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 class FindStar: 
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
-        self.driver.get('https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=9007774&recomd_id=hotSale&cid=recitri&oid=BfG&mdiv=&ctype=B')
+        self.driver.get('https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=3959576&recomd_id=hotSale&cid=recitri&oid=BfG&mdiv=&ctype=B')
         self.wait = WebDriverWait(self.driver, 20)
     def __get_ChromeOptions(self): 
         options = uc.ChromeOptions()
@@ -28,10 +28,11 @@ class FindStar:
         return options
 
     def findProduct(self):
-        # 總星星數
-        star = self.driver.find_element(By.XPATH, "//div[@class = 'indicatorAvg']//div[@class = 'indicatorAvgVal']")
         # 評論數
         comments = self.driver.find_element(By.XPATH, "//li[@class = 'goodsCommendLi']")
+        comments.click()
+        # 總星星數
+        star = self.driver.find_element(By.XPATH, "//div[@class = 'indicatorAvg']//div[@class = 'indicatorAvgVal']")
         #print(star.get_attribute("outerHTML"))
         #print(comments.get_attribute("outerHTML"))
         print(star.get_attribute("textContent"))
