@@ -8,9 +8,9 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
-class Category():
+class Category(object):
     def __init__(self) -> None:
-        self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=self.__get_ChromeOptions(), version_main=110)
+        self.driver = uc.Chrome(browser_executable_path=r"Applications/Google Chrome.app/Contents/MacOS/Google Chrome", options=self.__get_ChromeOptions(), version_main=110)
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
         self.wait = WebDriverWait(self.driver, 20)
         
@@ -61,7 +61,7 @@ class Category():
                 #print(r.get_attribute("indexname"))
                 subCatagories.append(r.get_attribute("indexname"))
                 
-                
+ 
     #找出小分類中的 小小分類列表
     def getSubCatagories2(self, subCatagory1, outType):
         subCatagories2 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
@@ -122,7 +122,7 @@ class Category():
             if(page != pages - 1):
                 goToNextPage()
         return LinksList
-                
+         
 c = Category()
 c.goToCatagoryLink("化妝水")
 #c.getSubCatagories2("品牌", "string")
