@@ -11,7 +11,7 @@
 
 同時，你也需要安裝 undetected_chromedriver 套件，這是一個能夠避免被偵測到的 ChromeDriver。你可以使用以下指令進行安裝：
 
-pip install undetected-chromedriver
+```pip install undetected-chromedriver```
 
 
 ### 開始使用
@@ -27,7 +27,7 @@ pip install undetected-chromedriver
 
 4. 在終端機中切換到程式碼所在的目錄，執行以下指令來運行程式：
 
-python Main.py
+```python Main.py```
 
 
 5. 程式將會提示你選擇商品的類別、大分類和小分類。根據提示進行選擇，直到所有分類都被選取完畢。
