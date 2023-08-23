@@ -8,6 +8,9 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
+
+
+
 class Category(object):
     def __init__(self) -> None:
         self.driver = uc.Chrome(browser_executable_path=r"Applications/Google Chrome.app/Contents/MacOS/Google Chrome", options=self.__get_ChromeOptions(), version_main=110)
