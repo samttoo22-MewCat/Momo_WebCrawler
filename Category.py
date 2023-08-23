@@ -8,18 +8,9 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
-<<<<<<< HEAD
-
-
-
-class Category(object):
-    def __init__(self) -> None:
-        self.driver = uc.Chrome(browser_executable_path=r"Applications/Google Chrome.app/Contents/MacOS/Google Chrome", options=self.__get_ChromeOptions(), version_main=110)
-=======
 class Category():
     def __init__(self, driver) -> None:
         self.driver = driver
->>>>>>> 49bb6ed4135b723c240b50781d49d1daf378bc21
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
         self.wait = WebDriverWait(self.driver, 20)
     
