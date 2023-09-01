@@ -1,6 +1,8 @@
 import json
-import Category, Findstars, Product
+import os
+import Category, Product
 import undetected_chromedriver as uc
+from datetime import datetime
 
 class Main():
     def __init__(self) -> None:
@@ -19,13 +21,13 @@ class Main():
             return options
         self.driver = uc.Chrome(browser_executable_path=r"C:\\Users\\v99sa\\Desktop\\chrome-win\\chrome.exe", options=__get_ChromeOptions(), version_main=110)
         self.category = Category.Category(self.driver)
-        self.findstars = Findstars.FindStar(self.driver)
         self.product = Product.Product(self.driver, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36')
         self.theCategory = ""
         self.theSubCate1 = ""
         self.theSubCate2 = []
         #self.category.goToCategoryLink("化妝水")
         #self.category.selectSubCate2("功效", "抗痘")
+        
         self.showCategories()
         self.showSubCate1()
     
@@ -55,7 +57,7 @@ class Main():
             self.theSubCate1 = subCate1[input01]
             self.showSubCate2()
         elif(input01 + 1 == len(subCate1)):
-            self.getJSON()
+            self.getJSON("json")
         
     def showSubCate2(self):
         subCate2 = self.category.getSubCategories2(self.theSubCate1, "string")
@@ -73,10 +75,20 @@ class Main():
         elif(input01 + 1 == len(subCate2)):
             self.showSubCate1()
     
-    def getJSON(self):
+    def getJSON(self, outType):
+        def create_folder(folder_name):
+            if not os.path.exists("./%s" % folder_name): 
+                os.mkdir("./%s" % folder_name)
+                print("未找到 ./%s 資料夾，已自動創建。" % folder_name)
+
+        def write_json(folder_name, json, fileName):
+            with open("./{}.json".format(fileName), mode = "w", encoding = "utf-8") as file:
+                file.write(json)
+                
         for s in self.theSubCate2:
             self.category.selectSubCate2(self.theSubCate1, s)
         productLinkList = self.category.getProductsLinksList()
+        print("已選取商品數: %d" % len(productLinkList))
         out = {}
         out.update({"類別": ""})
         out.update({"大分類": ""})
@@ -96,8 +108,12 @@ class Main():
             out["商品訊息列表"].append(productInfo)
             
         json_formatted_str = json.dumps(out, ensure_ascii = False, indent=2)
-        print(json_formatted_str)
-            
+        if(outType == "json"):
+            #create_folder("output")
+            fileName = datetime.now().strftime("out")
+            write_json("output", json_formatted_str, fileName)
+        elif(outType == "return"):
+            return json_formatted_str
         
     
 m = Main()

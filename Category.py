@@ -70,7 +70,7 @@ class Category():
                 subCategories2List.append(b.get_attribute("title"))
             return subCategories2List
     
-    
+    #在網頁上選取小分類
     def selectSubCate2(self, subCate1, subCate2):
         subCates2 = self.getSubCategories2(subCate1, "webElement")
         '''
@@ -85,13 +85,14 @@ class Category():
         '''
         for s in subCates2:
             if(subCate2 in s.get_attribute("title")):
-                print("yes")
+                
                 #self.wait.until(EC.element_to_be_clickable(s))
                 self.driver.execute_script("(arguments[0]).click();", s)
                 #s.click()
                 self.wait.until(EC.visibility_of_element_located((By.XPATH, "//label[@class = 'selected']")))
                 break
     
+    #獲取最終選完小分類的所有商品連結
     def getProductsLinksList(self):
         def getPages():
             pages = self.driver.find_element(By.XPATH, "//li[contains(text(),'頁數')]")

@@ -56,8 +56,16 @@ class Product(object):
         table = soup.find('div', {'class': 'attributesArea'}).find('table')
         columns =  [tr for tr in table.findAll('tr')]
         tds = [ column.find("td") for column in columns ]
-        ths = [ column.find("th").text for column in columns ]
-
+        ths = []
+        for column in columns:
+            try:
+                ths.append(column.find("th").text)
+            except:
+                
+                print(url)
+                print(column)
+            
+        
         # 商品規格 - 品牌系列名稱
         seriesNum = ths.index("品牌系列名稱") if "品牌系列名稱" in ths else -1
         if seriesNum == -1 :
