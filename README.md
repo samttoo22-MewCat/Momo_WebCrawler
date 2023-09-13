@@ -4,7 +4,7 @@
 
 ## 開發進度
 
-<input type="checkbox" checked> 臉部保養爬蟲模組<br>
+- [x] 臉部保養爬蟲模組<br>
 &ensp;|_ [臉部保養](https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4)<br>
 &ensp;&ensp;|_  $\color{#e40580}{( 類別 )}$ 化妝水, 精華液, 乳液, 乳霜, 凝膠, 面膜, 眼霜, 護唇膏, 防曬, 素顏霜, 美頸霜, 保養超值組<br>
 &ensp;&ensp;&ensp;|_ $\color{#e40580}{( 大分類 )}$  品牌, 適用於, 功效, 包裝組合, 品牌定位 ... <br>
@@ -12,7 +12,7 @@
 &ensp;&ensp;&ensp;&ensp;&ensp; |_  $\color{#e40580}{( 各商品 )}$  商品名稱,  最終折扣價格, 品牌名稱, 品號, 商品規格-品牌系列名稱,  商品規格-品牌定位, 商品規格-包裝組合, 商品規格-功效, 商品規格-適用於, 銷售量, 評論數, 總星星數<br>
 &ensp;&ensp;&ensp;&ensp;&ensp; -> 輸出為 json 檔
 
-<input type="checkbox" > 化妝品爬蟲模組<br>
+- [ ] 化妝品爬蟲模組<br>
 
 ## 下載
 
