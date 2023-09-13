@@ -1,11 +1,6 @@
-from time import sleep
-import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from datetime import datetime, timedelta
 
 class Category():
     def __init__(self, driver) -> None:
