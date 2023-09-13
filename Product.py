@@ -1,17 +1,8 @@
-import requests
-from selenium import webdriver
 # -*- coding: UTF-8 -*-
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from time import sleep
-from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
-from datetime import datetime, timedelta
-import json
-import gc
-import pymysql
 
 class Product(object):
     def __init__(self, driver, useragent) -> None:
@@ -45,7 +36,7 @@ class Product(object):
         soup = BeautifulSoup(pageSource,'lxml')
         # 商品名稱
         name = str(soup.find(id = 'osmGoodsName').text)
-        # 最折扣價格
+        # 最終折扣價格
         price = soup.find("meta", property="product:price:amount")
         # 品牌名稱
         brand = soup.find("meta", property="product:brand")
