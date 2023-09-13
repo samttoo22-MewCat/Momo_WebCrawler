@@ -1,5 +1,4 @@
 from time import sleep
-import pymysql
 import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,7 +13,7 @@ class Category():
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
         self.wait = WebDriverWait(self.driver, 20)
     
-    #找出大分類    
+    #找出類別
     def getCategories(self, outType):
         categories = self.driver.find_element(By.ID, "bt_cate_top")
         if(outType == "webElement"):
@@ -22,6 +21,7 @@ class Category():
         elif(outType == "string"):
             return categories.text.split(" ")
     
+    #打開類別
     def goToCategoryLink(self, category):
         #要先打開大分類才會出現小分類
         categoryBotton = self.getCategories("webElement")
@@ -31,7 +31,8 @@ class Category():
         #轉到大分類的的連結
         self.driver.get(categoryLink)
         self.wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
-    #找出小分類    
+    
+    #從類別中找出大分類    
     def getSubCategories1(self, category, outType):
         try:
             self.goToCategoryLink(category)
@@ -46,9 +47,8 @@ class Category():
                 #print(r.get_attribute("indexname"))
                 subCategories.append(r.get_attribute("indexname"))
             return subCategories
-                
-                
-    #找出小分類中的 小小分類列表
+                         
+    #從大分類中找出小分類
     def getSubCategories2(self, subCategory1, outType):
         subCategories2 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
             
@@ -70,7 +70,7 @@ class Category():
                 subCategories2List.append(b.get_attribute("title"))
             return subCategories2List
     
-    
+    #在網頁上選取小分類
     def selectSubCate2(self, subCate1, subCate2):
         subCates2 = self.getSubCategories2(subCate1, "webElement")
         '''
@@ -85,13 +85,14 @@ class Category():
         '''
         for s in subCates2:
             if(subCate2 in s.get_attribute("title")):
-                print("yes")
+                
                 #self.wait.until(EC.element_to_be_clickable(s))
                 self.driver.execute_script("(arguments[0]).click();", s)
                 #s.click()
                 self.wait.until(EC.visibility_of_element_located((By.XPATH, "//label[@class = 'selected']")))
                 break
     
+    #獲取最終選完小分類的所有商品連結
     def getProductsLinksList(self):
         def getPages():
             pages = self.driver.find_element(By.XPATH, "//li[contains(text(),'頁數')]")
@@ -119,4 +120,3 @@ class Category():
             if(page != pages - 1):
                 goToNextPage()
         return LinksList
-                
