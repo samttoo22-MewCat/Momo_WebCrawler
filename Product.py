@@ -70,7 +70,7 @@ class Product(object):
         else:
            brandtype = tds[brandtypeNum].text
         # 商品規格 - 包裝組合
-        packageNum = ths.index("包裝組合") if "品牌定位" in ths else -1
+        packageNum = ths.index("包裝組合") if "包裝組合" in ths else -1
         if  packageNum == -1 :
             package = None
         else:
