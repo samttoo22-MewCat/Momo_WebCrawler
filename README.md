@@ -1,24 +1,25 @@
 ## Momo_WebCrawler 
-這個程式是一個用來爬取 Momo 網站上商品資訊的網路爬蟲工具。它可以讓使用者選擇Momo購物網站的特定分類，然後爬取相關商品的資訊並輸出為 JSON 格式的檔案。
-此程式是 kiwiiiiiiiiO 和 samttoo22-MewCat 所開發。
+這個程式是一個用來爬取 Momo 網站上商品資訊的網路爬蟲工具。它可以讓使用者選擇Momo購物網站的特定分類，然後爬取相關商品的資訊並輸出為 JSON 格式的檔案。 <br>
+此程式是 kiwiiiiiiiiO 和 samttoo22-MewCat 所開發。 <br>
 
 
 ## 開發進度
 
 - [x] 全網站抓取資料之功能<br>
-&ensp;|_ $\color{#e40580}{( Cate0 )}$ 3C, 家電, 美妝個清, 保健/食品, 服飾/內衣, 鞋包/精品, 母嬰用品, 圖書文具, 傢寢運動, 日用生活, 旅遊戶外<br>
+&ensp;|_ $\color{#e40580}{( Cate0 )}$ 3C, 家電, 美妝個清, 保健/食品, 服飾/內衣, 鞋包/精品, 母嬰用品, 圖書文具, 傢寢運動, 日用生活, 旅遊戶外 <br>
 &ensp;&ensp;|_  $\color{#e40580}{( Cate1 )}$ <br>
 &ensp;&ensp;&ensp;|_ $\color{#e40580}{( Cate2 )}$ <br>
 &ensp;&ensp;&ensp;&ensp; |_ $\color{#e40580}{( Cate3 )}$ <br>
 &ensp;&ensp;&ensp;&ensp;&ensp; |_  $\color{#e40580}{( Cate4 )}$ <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; |_  $\color{#e40580}{( Cate5 )}$ <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; -> 輸出為 json 檔
-Cate 0 - 5分類分別是指哪個請看下面圖片。<br>
-Cate 0 後的分類因為不固定不在此列出。 <br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; -> 輸出為 json 檔 <br>
+Cate 0 - 5分類分別是指哪個請看下面圖片。 <br>
+Cate 0 後的分類因為不固定，故不在此列出。 <br>
 ![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial1.png) <br>
 ![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial2.png) <br>
 
 - [ ] 使用者介面與教學<br>
+- [ ] 多執行緒<br>
 ## 下載
 
 ## 環境設定
