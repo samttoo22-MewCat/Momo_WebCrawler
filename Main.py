@@ -36,13 +36,13 @@ class Main():
         self.theCate4 = ""
         self.theCate5 = []
         
-        #print(self.category.getCate1("美妝個清", "string"))
-        #print(self.category.getCate2("美妝個清", "臉部保養", "string"))
+        #print(self.category.getCate1List("美妝個清", "string"))
+        #print(self.category.getCate2List("美妝個清", "臉部保養", "string"))
         #self.category.goToCate2("美妝個清", "臉部保養", "化妝水")
-        #print(self.category.getCate3("string"))
+        #print(self.category.getCate3List("string"))
         #self.category.goToCate3Link("精華液")
-        #print(self.category.getCate4("精華液", "string"))
-        #print(self.category.getCate5("品牌", "string"))
+        #print(self.category.getCate4List("精華液", "string"))
+        #print(self.category.getCate5List("品牌", "string"))
         #self.category.selectCate5("品牌", "LANCOME")
         
         #self.getJSON("json")
@@ -103,7 +103,7 @@ class Main():
         self.theCate2 = Cate2
 
         self.category.goToCate2(Cate0, Cate1, Cate2)
-        Cate3 = self.category.getCate3("string")
+        Cate3 = self.category.getCate3List("string")
         for c in Cate3:
             #每次都要初始化
             self.__init__()

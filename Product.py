@@ -108,20 +108,28 @@ class Product(object):
         except:
             sales = "0"
         # 評論數
-        self.wait.until(EC.visibility_of_element_located((By.XPATH, "//li[@class = 'goodsCommendLi']")))
-        comments = self.driver.find_element(By.XPATH, "//li[@class = 'goodsCommendLi']")
-        
-        if comments.text == "商品評價(0)" :
-             starCount = 0 
-        else:
-            try:
-                comments.click()
-            except:
-                pass
+        starCount = 0
+        try:
+            self.wait.until(EC.visibility_of_element_located((By.XPATH, "//li[@class = 'goodsCommendLi']")))
+            comments = self.driver.find_element(By.XPATH, "//li[@class = 'goodsCommendLi']")
+            
+            if comments.text == "商品評價(0)" :
+                starCount = 0 
+            else:
+                try:
+                    comments.click()
+                except:
+                    pass
+        except:
+            starCount = 0 
         # 總星星數
-        star = self.driver.find_element(By.XPATH, "//div[@class = 'indicatorAvg']//div[@class = 'indicatorAvgVal']")
-        starCount = star.get_attribute("textContent")
-        comments = str(comments.text).replace('商品評價(','').replace(')','')
+        try:
+            star = self.driver.find_element(By.XPATH, "//div[@class = 'indicatorAvg']//div[@class = 'indicatorAvgVal']")
+            starCount = star.get_attribute("textContent")
+            comments = str(comments.text).replace('商品評價(','').replace(')','')
+        except:
+            starCount = 0
+            comments = 0
 
         #把蒐集到的所有資料弄成一字典
         ProductDict = {

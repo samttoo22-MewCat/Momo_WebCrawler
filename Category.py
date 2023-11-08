@@ -8,8 +8,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
-#test
-#用以處理類別、大分類、小分類資訊的class
+#類別Cate現在被分為0 - 5
 class Category():
     def __init__(self, driver) -> None:
         
@@ -19,18 +18,19 @@ class Category():
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
         self.wait = WebDriverWait(self.driver, 20)
     
-    def getCate0(self, outType):
+    def getCate0List(self, outType):
         Cate0 = self.driver.find_element(By.ID, "toothUl")
         if(outType == "webElement"):
             return Cate0
         elif(outType == "string"):
             return Cate0.text.split(" ")
-    def getCate1(self, Cate0, outType):
-        CateDict = {"3C" : 0, "家電": 1, "美妝個清": 2,
+        
+    def getCate1List(self, Cate0, outType):
+        Cate0Dict = {"3C" : 0, "家電": 1, "美妝個清": 2,
                     "保健/食品": 3, "服飾/內衣": 4, "鞋包/精品": 5,
                     "母嬰用品": 6, "圖書文具": 7, "傢寢運動": 8,
                     "日用生活": 9, "旅遊戶外": 10}
-        CateIndex = CateDict[Cate0]
+        CateIndex = Cate0Dict[Cate0]
         rawCate1 = self.driver.find_elements(By.XPATH, "//*[@id='bt_0_layout_b1096']//div[@class='btclass navcontent_innerwarp category2019']")
         Cate1 = rawCate1[CateIndex]
         Cate1 = Cate1.find_elements(By.XPATH, ".//div[@class='contenttop topArea']//table//tbody//tr//td//p") 
@@ -42,8 +42,9 @@ class Category():
             for c in Cate1:
                 out.append(c.get_attribute("textContent"))
             return out
-        
-    def getCate2(self, Cate0, Cate1, outType):
+    
+    #從Cate0 和 Cate1 找出 Cate2 列表    
+    def getCate2List(self, Cate0, Cate1, outType):
         CateDict = {"3C": 0, "家電": 1, "美妝個清": 2,
                     "保健/食品": 3, "服飾/內衣": 4, "鞋包/精品": 5,
                     "母嬰用品": 6, "圖書文具": 7, "傢寢運動": 8,
@@ -51,7 +52,7 @@ class Category():
         i = 0
         #把Cate1轉換成字典
         Cate1Dict = {}
-        for c in self.getCate1(Cate0, "string"):
+        for c in self.getCate1List(Cate0, "string"):
             Cate1Dict[c] = i
             i += 1
             
@@ -72,17 +73,17 @@ class Category():
                 out.append(c.get_attribute("textContent"))
             return out
     
-    def goToCate2(self, Cate0, Cate1, Cate2):
-        Cate2 = self.getCate2(Cate0, Cate1, "webElement")
+    #從Cate0, Cate1, 和選定的Cate2 中前往 Cate2 的連結  
+    def goToCate2List(self, Cate0, Cate1, Cate2):
+        Cate2 = self.getCate2List(Cate0, Cate1, "webElement")
         for c in Cate2:
             Cate2Name = c.get_attribute("textContent")
             if(Cate2Name == Cate2):
                 self.driver.get(c.get_attribute("href"))
                 break
         
-        
-    #找出類別列表
-    def getCate3(self, outType):
+    #找出Cate3
+    def getCate3List(self, outType):
         #找出id為"bt_cate_top"的網頁元素，即為類別列表的網頁元素
         Cate3 = self.driver.find_element(By.ID, "bt_cate_top")
         #用網頁元素回傳還是回傳字串
@@ -91,11 +92,11 @@ class Category():
         elif(outType == "string"):
             return Cate3.text.split(" ")
     
-    #打開類別
+    #打開Cate3
     def goToCate3Link(self, Cate3):
         #要先打開大分類才會出現小分類
         #拿到類別列表的網頁元素
-        Cate3Botton = self.getCate3("webElement")
+        Cate3Botton = self.getCate3List("webElement")
         #從類別底下再找到特定類別
         Cate3Botton = Cate3Botton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % Cate3)
         #拿到該特定類別的連結
@@ -106,8 +107,8 @@ class Category():
         #進入後要等到大類別出現
         self.wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
     
-    #從特定類別中找出大分類列表    
-    def getCate4(self, Cate3, outType):
+    #從Cate3中找出Cate4 列表
+    def getCate4List(self, Cate3, outType):
         #試著進入此類別連結，無法則代表此類別存不存在
         try:
             self.goToCate3Link(Cate3)
@@ -127,8 +128,8 @@ class Category():
             out.pop()
             return out
                          
-    #從特定大分類中找出小分類列表
-    def getCate5(self, Cate4, outType):
+    #從Cate4中找出Cate5 列表
+    def getCate5List(self, Cate4, outType):
         #從以下路徑找出小分類列表
         Cate5 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
         for s in Cate5:
@@ -149,11 +150,11 @@ class Category():
                 Cate5List.append(b.get_attribute("title"))
             return Cate5List
     
-    #在網頁上選取小分類
+    #從 Cate4 選擇指定的 Cate5
     def selectCate5(self, Cate4, Cate5):
         Cate5Name = Cate5
         #拿到小分類列表的網頁元素
-        Cate5List = self.getCate5(Cate4, "webElement")
+        Cate5List = self.getCate5List(Cate4, "webElement")
         
         #從小分類列表裡面找出要選的小分類，然後點擊他
         for s in Cate5List:
@@ -215,17 +216,5 @@ class Category():
         print("總共" + str(len(LinksList)) + "個商品。\n")
         
         return LinksList
-def __get_ChromeOptions(): 
-            options = uc.ChromeOptions()
-            options.add_argument('--start_maximized')
-            options.add_argument("--disable-extensions")
-            options.add_argument('--disable-application-cache')
-            options.add_argument('--disable-gpu')
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-notifications")
-            options.add_argument("--incognito")
-            
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--user-data-dir=C:\\Users\\v99sa\\Desktop\\coding\\py\\Momo_WebCrawler\\Momo_WebCrawler\\profile1")
-            return options    
+
 
