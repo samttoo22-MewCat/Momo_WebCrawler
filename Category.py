@@ -198,8 +198,7 @@ class Category():
                 out = []
                 out.append(url)
                 out.append(totalSale)
-                LinksList.append(out)
-            
+                LinksList.append(out)          
             try:
                 #如果還沒到最後一頁
                 if(EC.invisibility_of_element((By.XPATH, "//div[@class = 'adjustmentTextArea']"))):
@@ -216,5 +215,6 @@ class Category():
         print("總共" + str(len(LinksList)) + "個商品。\n")
         
         return LinksList
+
 
 

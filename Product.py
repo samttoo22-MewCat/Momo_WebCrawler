@@ -1,3 +1,4 @@
+
 import requests
 from selenium import webdriver
 # -*- coding: UTF-8 -*-
@@ -17,13 +18,11 @@ class Product(object):
     def __init__(self, driver, useragent) -> None:
         self.driver = driver
         self._useragent = useragent
-        
-        
+
         self.wait = WebDriverWait(self.driver, 20)
         self.headers = {
             'User-Agent': self._useragent
         }
-
     def __get_ChromeOptions(self): 
             options = uc.ChromeOptions()
             options.add_argument('--start_maximized')
@@ -44,6 +43,7 @@ class Product(object):
             self.driver.switch_to.alert.dismiss()
         except:
             pass
+
         pageSource = self.driver.page_source.encode("utf-8")
         soup = BeautifulSoup(pageSource,'lxml')
         # 商品名稱
@@ -66,6 +66,7 @@ class Product(object):
             except:
                 pass
             
+
         
         # 商品規格 - 品牌系列名稱
         seriesNum = ths.index("品牌系列名稱") if "品牌系列名稱" in ths else -1
@@ -88,6 +89,7 @@ class Product(object):
                 package =  str(tds[packageNum]).replace('<td>',"").replace('<ul>',"").replace('<li>',"").replace('</li>',"*").replace('</ul>',"").replace('</td>',"")
         except:
             package = None
+
         # 商品規格 - 功效
         functionNum = ths.index("功效") if "功效" in ths else -1
         if  functionNum == -1 :
@@ -132,6 +134,7 @@ class Product(object):
             comments = 0
 
         #把蒐集到的所有資料弄成一字典
+
         ProductDict = {
             "name": name,
             "id": productid["content"], 
@@ -147,4 +150,3 @@ class Product(object):
             "star":starCount
         }
         return ProductDict
-    
