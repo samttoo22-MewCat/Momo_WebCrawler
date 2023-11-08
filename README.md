@@ -15,8 +15,8 @@
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; -> 輸出為 json 檔
 Cate 0 - 5分類分別是指哪個請看下面圖片。<br>
 Cate 0 後的分類因為不固定不在此列出。 <br>
-![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial01.png) <br>
-![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial02.png) <br>
+![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial1.png) <br>
+![image](https://github.com/samttoo22-MewCat/Momo_WebCrawler/blob/main/tutorial2.png) <br>
 
 - [ ] 使用者介面與教學<br>
 ## 下載
