@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
 #類別Cate現在被分為0 - 5
-class Category():
+class Handler():
     def __init__(self, driver) -> None:
         
         #由外部匯入driver
@@ -74,7 +74,7 @@ class Category():
             return out
     
     #從Cate0, Cate1, 和選定的Cate2 中前往 Cate2 的連結  
-    def goToCate2List(self, Cate0, Cate1, Cate2):
+    def goToCate2Link(self, Cate0, Cate1, Cate2):
         Cate2 = self.getCate2List(Cate0, Cate1, "webElement")
         for c in Cate2:
             Cate2Name = c.get_attribute("textContent")
@@ -146,7 +146,6 @@ class Category():
             for b in Cate5:
                 if(b.get_attribute("title") == None):
                     pass
-                #print(b.get_attribute("outerHTML"))
                 Cate5List.append(b.get_attribute("title"))
             return Cate5List
     
@@ -180,16 +179,16 @@ class Category():
             nextPageBotton = self.driver.find_element(By.XPATH, "//div[@class = 'pageArea']//dl//dd//a[contains(text(),'下一頁')]")
             self.wait.until(EC.element_to_be_clickable(nextPageBotton))
             nextPageBotton.click()
-            self.wait.until(EC.visibility_of_all_elements_located)
         
         LinksList = []
         pages = int(getPages())
-        print("總共" + str(pages) + "頁，開始蒐集連結...\n(網站的頁面不一定正確，對我試過了，反正超過或少於都很正常)\n")
+        print("總共" + str(pages) + "頁，開始蒐集連結...\n(網站的頁面不一定正確，對我試過了，反正少於很正常)\n")
         
         #跑過每一頁
         page = 1
         while(True):
             #抓出當頁所有商品
+            self.wait.until(EC.visibility_of_all_elements_located)
             products = self.driver.find_elements(By.XPATH, "//div[@class = 'prdListArea bt770class']//ul//li")
             #遍歷商品
             for product in products:
@@ -199,6 +198,7 @@ class Category():
                 out.append(url)
                 out.append(totalSale)
                 LinksList.append(out)
+                
             
             try:
                 #如果還沒到最後一頁

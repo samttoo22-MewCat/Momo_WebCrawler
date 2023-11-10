@@ -1,6 +1,4 @@
-import requests
 from selenium import webdriver
-# -*- coding: UTF-8 -*-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -9,11 +7,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
 from datetime import datetime, timedelta
-import json
-import gc
-import pymysql
 
-class Product(object):
+
+class Handler(object):
     def __init__(self, driver, useragent) -> None:
         self.driver = driver
         self._useragent = useragent
@@ -39,7 +35,6 @@ class Product(object):
         return self._url
     def getProductInfo(self, url):
         self.driver.get(url)
-        self.wait.until(EC.visibility_of_all_elements_located)
         try:
             self.driver.switch_to.alert.dismiss()
         except:
