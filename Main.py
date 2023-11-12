@@ -8,7 +8,7 @@ import datetime
 from datetime import datetime
 import traceback
 import sys
-import json
+from selenium.webdriver.common.by import By
 
 class Main():
     def __init__(self) -> None:
@@ -18,14 +18,19 @@ class Main():
         self.productHandler = ProductHandler.Handler(self.driver, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36')
         self.lock = asyncio.Lock()
 
+        #測試區
 
-        #self.category.goToCate2("美妝個清", "臉部保養", "化妝水")
-        #self.category.goToCate3Link("精華液")
-        #self.category.selectCate5("品牌", "LANCOME")
+        #print(self.categoryHandler.getCate2List("美妝個清", "個人清潔", "string"))
+        #self.categoryHandler.goToCate2Link("美妝個清", "個人清潔", "洗髮護髮")
+        #print(self.categoryHandler.getCate3List("string"))
+        #self.categoryHandler.goToCate3Link("女香")
+        #print(self.categoryHandler.getProductsLinksList())
+        
+        #self.categoryHandler.goToCate3Link("精華液")
+        #self.categoryHandler.selectCate5("品牌", "LANCOME")
 
-        #self.getJSON("json")
-
-
+        #測試區
+        
     #瀏覽器設定
     def __get_ChromeOptions(self): 
         options = uc.ChromeOptions()
@@ -46,7 +51,10 @@ class Main():
 
     async def getWholeCate3Products(self, Cate0, Cate1, Cate2):
 
+        self.categoryHandler.goToCate2Link(Cate0, Cate1, Cate2)
         Cate3List = self.categoryHandler.getCate3List("string")
+        print(Cate3List)
+        
         print("找到 " + str(len(Cate3List)) + " 個 Cate3，開始抓取。")
         def create_folder(folder_name):
                 if not os.path.exists("./%s" % folder_name): 
@@ -64,6 +72,7 @@ class Main():
             time_start_str = time_start.strftime("%m/%d/%Y, %H:%M:%S")
             time_end = datetime.now()
 
+            
             def write_json(folder_name, dict, fileName):
                 with open("./{}/{}.json".format(folder_name, fileName), mode = "w", encoding = "utf-8") as file:
                     json_str = json.dumps(dict, ensure_ascii=False, indent=2)
@@ -97,7 +106,9 @@ class Main():
                     link = p[0]
                     try:
                         productInfo = await asyncio.to_thread(newProductHandler.getProductInfo, link)
-                        out["商品訊息列表"].append(productInfo)
+                        async with self.lock:
+                            await asyncio.to_thread(out["商品訊息列表"].append, productInfo)
+                        
                         print("已抓取商品資訊: " + str(count) + " / " + str(len(productLinkList)) + " 個")
                         count += 1
                     except Exception as e:
@@ -114,6 +125,8 @@ class Main():
 
                 if(outType == "json"):
                     fileName = Cate0 + " " + Cate1 + " " + Cate2 + " " + Cate3
+                    if("/" in fileName):
+                        fileName = fileName.replace("/", "-")
                     async with self.lock:
                         await asyncio.to_thread(write_json, "out", out, fileName)
                     print("商品資訊儲存完成。\n")
@@ -132,9 +145,10 @@ class Main():
 
         tasks = []
         for c in Cate3List:
+            if(Cate3List.index(c) >= 19 and Cate3List.index(c) <= 31):
             #async with sema:
-            task = asyncio.create_task(getSingleCate3Products(c))
-            tasks.append(task)
+                task = asyncio.create_task(getSingleCate3Products(c))
+                tasks.append(task)
 
         await asyncio.gather(*tasks)
 
@@ -145,8 +159,7 @@ class Main():
 
 if __name__ == '__main__':          
     m = Main()
-    try:
-        asyncio.run(m.getWholeCate3Products("美妝個清", "臉部保養", "化妝水"))
-    except KeyboardInterrupt:
-        sys.exit(1)
+
+    asyncio.run(m.getWholeCate3Products("美妝個清", "個人清潔", "洗髮護髮"))
+
     #m.debugLink("https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=10592219&str_category_code=1111700001&sourcePageType=4")

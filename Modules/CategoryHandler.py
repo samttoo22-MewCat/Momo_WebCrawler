@@ -3,6 +3,7 @@ import pymysql
 import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import *
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -16,14 +17,14 @@ class Handler():
         self.driver = driver
         #讓driver打開初始網址
         self.driver.get('https://www.momoshop.com.tw/category/LgrpCategory.jsp?l_code=1111700000&sourcePageType=4')
-        self.wait = WebDriverWait(self.driver, 20)
+        self.wait = WebDriverWait(self.driver, 10, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
     
     def getCate0List(self, outType):
-        Cate0 = self.driver.find_element(By.ID, "toothUl")
+        Cate0List = self.driver.find_element(By.ID, "toothUl")
         if(outType == "webElement"):
-            return Cate0
+            return Cate0List
         elif(outType == "string"):
-            return Cate0.text.split(" ")
+            return Cate0List.text.split(" ")
         
     def getCate1List(self, Cate0, outType):
         Cate0Dict = {"3C" : 0, "家電": 1, "美妝個清": 2,
@@ -33,13 +34,13 @@ class Handler():
         CateIndex = Cate0Dict[Cate0]
         rawCate1 = self.driver.find_elements(By.XPATH, "//*[@id='bt_0_layout_b1096']//div[@class='btclass navcontent_innerwarp category2019']")
         Cate1 = rawCate1[CateIndex]
-        Cate1 = Cate1.find_elements(By.XPATH, ".//div[@class='contenttop topArea']//table//tbody//tr//td//p") 
+        Cate1List = Cate1.find_elements(By.XPATH, ".//div[@class='contenttop topArea']//table//tbody//tr//td//p") 
                 
         if(outType == "webElement"):
-            return Cate1
+            return Cate1List
         elif(outType == "string"):
             out = []
-            for c in Cate1:
+            for c in Cate1List:
                 out.append(c.get_attribute("textContent"))
             return out
     
@@ -75,22 +76,26 @@ class Handler():
     
     #從Cate0, Cate1, 和選定的Cate2 中前往 Cate2 的連結  
     def goToCate2Link(self, Cate0, Cate1, Cate2):
-        Cate2 = self.getCate2List(Cate0, Cate1, "webElement")
-        for c in Cate2:
+        Cate2List = self.getCate2List(Cate0, Cate1, "webElement")
+        for c in Cate2List:
             Cate2Name = c.get_attribute("textContent")
             if(Cate2Name == Cate2):
                 self.driver.get(c.get_attribute("href"))
+                self.wait.until(EC.visibility_of_element_located((By.XPATH, "//ul[@id = 'bt_cate_top']//li//a")))
                 break
         
     #找出Cate3
     def getCate3List(self, outType):
         #找出id為"bt_cate_top"的網頁元素，即為類別列表的網頁元素
-        Cate3 = self.driver.find_element(By.ID, "bt_cate_top")
+        Cate3List = self.driver.find_elements(By.XPATH, "//ul[@id = 'bt_cate_top']//li//a")
         #用網頁元素回傳還是回傳字串
         if(outType == "webElement"):
-            return Cate3
+            return Cate3List
         elif(outType == "string"):
-            return Cate3.text.split(" ")
+            out = []
+            for c in Cate3List:
+                out.append(c.get_attribute("textContent"))
+            return out
     
     #打開Cate3
     def goToCate3Link(self, Cate3):
@@ -98,14 +103,19 @@ class Handler():
         #拿到類別列表的網頁元素
         Cate3Botton = self.getCate3List("webElement")
         #從類別底下再找到特定類別
-        Cate3Botton = Cate3Botton.find_element(By.XPATH, ".//a[contains(text(),'%s')]" % Cate3)
+        for c in Cate3Botton:
+            if(c.get_attribute("textContent") == Cate3):
+                Cate3Botton = c
+                break
         #拿到該特定類別的連結
         Cate3Link = Cate3Botton.get_attribute("href")
         
         #進入該特定類別的連結
-        self.driver.get(Cate3Link)
-        #進入後要等到大類別出現
-        self.wait.until(EC.visibility_of_element_located((By.XPATH, "//th[contains(text(),'品牌')]")))
+        #self.driver.get(Cate3Link)
+        self.wait.until(EC.element_to_be_clickable(Cate3Botton))
+        Cate3Botton.click()
+        #self.wait.until(EC.visibility_of_all_elements_located())
+        #self.wait.until(EC.visibility_of_element_located((By.XPATH, "//tr[@class = 'goodsBrandTr']")))
     
     #從Cate3中找出Cate4 列表
     def getCate4List(self, Cate3, outType):
@@ -131,19 +141,19 @@ class Handler():
     #從Cate4中找出Cate5 列表
     def getCate5List(self, Cate4, outType):
         #從以下路徑找出小分類列表
-        Cate5 = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
-        for s in Cate5:
+        Cate5List = self.driver.find_elements(By.XPATH, "//table[@class = 'wrapTable']//tbody//tr")
+        for s in Cate5List:
             Cate4Name = s.get_attribute("indexname")
             if(Cate4Name == Cate4):
-                Cate5 = s.find_elements(By.XPATH, ".//td//div[@class = 'wrapDiv']//ul//li//label")
+                Cate5List = s.find_elements(By.XPATH, ".//td//div[@class = 'wrapDiv']//ul//li//label")
                 break
             
         #輸出網頁元素還是文字
         if(outType == "webElement"):
-            return Cate5
+            return Cate5List
         elif(outType == "string"):
             Cate5List = []
-            for b in Cate5:
+            for b in Cate5List:
                 if(b.get_attribute("title") == None):
                     pass
                 Cate5List.append(b.get_attribute("title"))
@@ -172,6 +182,11 @@ class Handler():
                 pages = self.driver.find_element(By.XPATH, "//li[contains(text(),'頁數')]")
                 return pages.text.split(" ")[-1]
             except:
+                try:
+                    pages = self.driver.find_element(By.XPATH, "//span[contains(text(),'頁數')]")
+                    return pages.text.split("/")[-1]
+                except:
+                    print("page error")
                 return 0
 
         #前往下一頁
@@ -188,11 +203,19 @@ class Handler():
         page = 1
         while(True):
             #抓出當頁所有商品
-            self.wait.until(EC.visibility_of_all_elements_located)
+            #self.wait.until(EC.visibility_of_all_elements_located())
             products = self.driver.find_elements(By.XPATH, "//div[@class = 'prdListArea bt770class']//ul//li")
+            
+            #幹 為什麼這些工程師要把不同頁面 同功能 class取不一樣
+            if(products == []):
+                products = self.driver.find_elements(By.XPATH, "//div[@class = 'listArea']//ul//li")
+            
             #遍歷商品
             for product in products:
-                url = product.find_element(By.XPATH, ".//a[@class = 'prdUrl']").get_attribute("href")
+                try:
+                    url = product.find_element(By.XPATH, ".//a[@class = 'prdUrl']").get_attribute("href")
+                except:
+                    url = product.find_element(By.XPATH, ".//a[@class = 'goodsUrl']").get_attribute("href")
                 totalSale = product.find_element(By.XPATH, ".//span[@class = 'totalSales goodsTotalSales']").text.split(">")[-1]
                 out = []
                 out.append(url)

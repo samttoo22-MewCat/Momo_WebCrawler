@@ -7,6 +7,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
 from datetime import datetime, timedelta
+from selenium.common.exceptions import *
 
 
 class Handler(object):
@@ -15,7 +16,7 @@ class Handler(object):
         self._useragent = useragent
         
         
-        self.wait = WebDriverWait(self.driver, 20)
+        self.wait = WebDriverWait(self.driver, 10, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         self.headers = {
             'User-Agent': self._useragent
         }
@@ -42,9 +43,15 @@ class Handler(object):
         pageSource = self.driver.page_source.encode("utf-8")
         soup = BeautifulSoup(pageSource,'lxml')
         # 商品名稱
-        name = str(soup.find(id = 'osmGoodsName').text)
+        try:
+            name = str(soup.find(id = 'osmGoodsName').text)
+        except:
+            name = ""
         # 最折扣價格
-        price = soup.find("meta", property="product:price:amount")
+        try:
+            price = soup.find("meta", property="product:price:amount")
+        except:
+            price = 0
         # 品牌名稱
         brand = soup.find("meta", property="product:brand")
         # 品號
