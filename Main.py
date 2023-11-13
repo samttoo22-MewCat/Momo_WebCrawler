@@ -20,8 +20,8 @@ class Main():
 
         #測試區
 
-        #print(self.categoryHandler.getCate2List("美妝個清", "個人清潔", "string"))
-        #self.categoryHandler.goToCate2Link("美妝個清", "個人清潔", "洗髮護髮")
+        #print(self.categoryHandler.getCate2List("美妝個清", "香氛/SPA", "string"))
+        #self.categoryHandler.goToCate2Link("美妝個清", "香氛/SPA", "精油/擴香")
         #print(self.categoryHandler.getCate3List("string"))
         #self.categoryHandler.goToCate3Link("女香")
         #print(self.categoryHandler.getProductsLinksList())
@@ -78,7 +78,6 @@ class Main():
                     json_str = json.dumps(dict, ensure_ascii=False, indent=2)
                     file.write(json_str)
 
-
             async def getCate3JSON(outType, Cate3):
                 productLinkList = await asyncio.to_thread(newCategoryHandler.getProductsLinksList)
                 print("已選取商品數: %d\n" % len(productLinkList))
@@ -106,8 +105,7 @@ class Main():
                     link = p[0]
                     try:
                         productInfo = await asyncio.to_thread(newProductHandler.getProductInfo, link)
-                        async with self.lock:
-                            await asyncio.to_thread(out["商品訊息列表"].append, productInfo)
+                        await asyncio.to_thread(out["商品訊息列表"].append, productInfo)
                         
                         print("已抓取商品資訊: " + str(count) + " / " + str(len(productLinkList)) + " 個")
                         count += 1
@@ -145,7 +143,7 @@ class Main():
 
         tasks = []
         for c in Cate3List:
-            if(Cate3List.index(c) >= 19 and Cate3List.index(c) <= 31):
+            if(Cate3List.index(c) <= 5):
             #async with sema:
                 task = asyncio.create_task(getSingleCate3Products(c))
                 tasks.append(task)
@@ -160,6 +158,6 @@ class Main():
 if __name__ == '__main__':          
     m = Main()
 
-    asyncio.run(m.getWholeCate3Products("美妝個清", "個人清潔", "洗髮護髮"))
+    asyncio.run(m.getWholeCate3Products("美妝個清", "香氛/SPA", "精油/擴香"))
 
     #m.debugLink("https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=10592219&str_category_code=1111700001&sourcePageType=4")
