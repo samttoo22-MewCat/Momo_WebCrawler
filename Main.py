@@ -20,9 +20,9 @@ class Main():
 
         #測試區
 
-        #print(self.categoryHandler.getCate2List("美妝個清", "香氛/SPA", "string"))
-        #self.categoryHandler.goToCate2Link("美妝個清", "香氛/SPA", "精油/擴香")
-        #print(self.categoryHandler.getCate3List("string"))
+        print(self.categoryHandler.getCate2List("美妝個清", "個人清潔", "string"))
+        self.categoryHandler.goToCate2Link("美妝個清", "個人清潔", "手工皂/香皂")
+        print(self.categoryHandler.getCate3List("string"))
         #self.categoryHandler.goToCate3Link("女香")
         #print(self.categoryHandler.getProductsLinksList())
         
@@ -143,7 +143,7 @@ class Main():
 
         tasks = []
         for c in Cate3List:
-            if(Cate3List.index(c) <= 5):
+            if(Cate3List.index(c) in [6, 7, 8, 9, 10, 11]):
             #async with sema:
                 task = asyncio.create_task(getSingleCate3Products(c))
                 tasks.append(task)
@@ -158,6 +158,6 @@ class Main():
 if __name__ == '__main__':          
     m = Main()
 
-    asyncio.run(m.getWholeCate3Products("美妝個清", "香氛/SPA", "精油/擴香"))
+    asyncio.run(m.getWholeCate3Products("美妝個清", "個人清潔", "手工皂/香皂"))
 
     #m.debugLink("https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=10592219&str_category_code=1111700001&sourcePageType=4")
